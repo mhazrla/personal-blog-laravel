@@ -25,4 +25,10 @@ class Post extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function comment()
+    {
+        // Many-to-One Relationship with Comment model
+        return $this->hasMany(Comment::class);
+    }
 }

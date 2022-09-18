@@ -1,11 +1,14 @@
 <?php
 
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AboutController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +37,9 @@ Route::resource('/tags', TagController::class)->middleware(['auth']);
 Route::resource('/about', AboutController::class)->only([
     'index'
 ]);
+// Route::get('/contact', function () {
+//     Mail::to('mhazrla@gmail.com')->send(new TestMail());
+// });
+
+Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');

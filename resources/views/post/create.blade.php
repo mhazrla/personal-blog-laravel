@@ -48,11 +48,21 @@
             </div>
 
             <div class="mb-6">
-                <label for="tags" class="block mb-2 text-sm font-medium ">Tags</label>
+                {{-- <label for="tags" class="block mb-2 text-sm font-medium ">Tags</label>
                 <input type="text" id="tags" name="tags"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Tags" value="{{ old('tags') }}">
-                <span class="text-xs text-gray-400">Separated by crash (#)</span>
+                <span class="text-xs text-gray-400">Separated by crash (#)</span> --}}
+
+                <label for="tags" class="block mb-2 text-sm font-medium ">Tags</label>
+                <select multiple="" id="tags" name="tags[]"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @foreach ($tags as $tag)
+                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                    @endforeach
+
+                </select>
+
 
                 <div class="my-2 ">
                     @error('tags')

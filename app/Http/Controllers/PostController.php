@@ -33,8 +33,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('post.create', compact('categories'));
+        return view('post.create', compact('categories', 'tags'));
     }
 
     /**
@@ -46,21 +47,19 @@ class PostController extends Controller
     public function store(PostStoreRequest $request)
     {
         $user_id = auth()->id();
-        $tags = explode('#', $request->tags);
+        // $tags = explode('#', $request->tags);
         $validatedData = $request->validated();
 
         if ($request->has('img')) {
             $validatedData['img'] = $request->file('img')->store('posts');
         }
+
         $post = Post::create($validatedData + ['user_id' => $user_id]);
 
-        foreach ($tags as $tagName) {
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $post->tags()->attach($tag);
+        if ($request->has('tags')) {
+            $post->tags()->attach($request->tags);
         }
-        // Path file uploading
-        // Edit post
-        // Delete also
+
         return to_route('posts.index')->with('status', 'New post has been added.');
     }
 
@@ -86,7 +85,8 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        $tags = $post->tags->implode('name', '#');
+        $tags = Tag::all();
+        // $tags = $post->tags->implode('name', '#');
         return view('post.edit', compact('post', 'tags', 'categories'));
     }
 
@@ -99,7 +99,6 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
-        $tags = explode('#', $request->tags);
 
         if ($request->has('img')) {
             !is_null($post->img) && Storage::delete($post->img);
@@ -110,14 +109,8 @@ class PostController extends Controller
             'img' => $post->img,
         ]);
 
-        $newTags = [];
 
-        foreach ($tags as $tagName) {
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            array_push($newTags, $tag->id);
-        }
-
-        $post->tags()->sync($newTags);
+        $post->tags()->sync($request->tags);
         return to_route('posts.index')->with('status', 'Post has been updated.');
     }
 
